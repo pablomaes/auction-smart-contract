@@ -1,92 +1,94 @@
 # 🧾 Auction Smart Contract
 
-This project implements a basic auction system as a smart contract using Solidity, designed as a final project for Module 2 of the blockchain course. The contract was deployed on the Sepolia testnet and includes all required and advanced functionalities.
+This project implements a timed auction smart contract using Solidity, deployed on the Sepolia testnet as a final project for Module 2 of the blockchain course. The contract includes features such as incremental bids with a minimum percentage increase, auction time extension, commission to the owner, partial refunds, and emergency withdrawal.
 
 ---
 
 ## 📍 Contract Information
 
-- **Network**: Sepolia Testnet  
-- **Deployer Address**: `0xEe03460409Ba53b6dcd65E8f0B93EC296F995eb0`  
-- **Verified Contract URL**: *[https://sepolia.etherscan.io/address/0xEe03460409Ba53b6dcd65E8f0B93EC296F995eb0#code]*  
-- **GitHub Repository**: https://github.com/pablomaes/auction-smart-contract
+- **Network:** Sepolia Testnet  
+- **Deployer Address:** `0xEe03460409Ba53b6dcd65E8f0B93EC296F995eb0`  
+- **Verified Contract URL:** (https://sepolia.etherscan.io/address/0x2D1148BDB5832Dde4b002D7154237be6A168Abbb#code)  
+- **GitHub Repository:** https://github.com/pablomaes/auction-smart-contract
 
 ---
 
 ## ⚙️ Constructor
 
-Initializes the auction with:
-- A start and end time (in seconds)
-- An initial reserve price
+Initializes the auction duration in minutes and sets the deployer as the owner.
+
+```solidity
+constructor(uint _durationInMinutes)
 
 
-constructor(uint _durationInMinutes, uint _reservePrice)
+🔥 Main Functionalities
 
-📢 Main Functionalities
-🛎️ placeBid()
-Allows participants to place a bid.
-
-The bid must be:
-
-Higher than the current highest bid.
-
-At least 5% greater than the current highest bid.
-
-If a bid is placed within the last 10 minutes of the auction, the auction end time is extended by 10 minutes.
-
+placeBid()
+Allows users to place bids before the auction ends.
+Each new bid must be at least 5% higher than the current highest bid (unless it's the first bid).
+If a bid is placed within the last 10 minutes, the auction end time is extended by 10 minutes.
+Stores bids and bid history.
 Emits the NewBid event.
 
-🧾 getBids()
-Returns all the bidders and their respective amounts.
+timeLeft()
+Returns the remaining time of the auction in seconds.
+Returns 0 if the auction has ended.
 
-function getBids() public view returns (address[] memory, uint[] memory)
-👑 getWinner()
-Returns the address of the winner and the winning bid amount. Can only be called after the auction ends.
+showWinner()
+Returns the current highest bidder and highest bid.
+Callable anytime but most meaningful after auction ends.
 
-function getWinner() public view returns (address, uint)
+showBidHistory(address bidder)
+Returns the full bidding history of a specific address.
 
-💸 finalizeAuction()
-Transfers the funds to the owner (minus a 2% commission).
+withdrawPartialRefund()
+Allows bidders to withdraw refundable balances from previous overbid amounts.
+Emits the PartialRefund event.
 
-Returns the funds to all non-winning bidders.
-
-Can only be called once after the auction ends.
-
+endAuction()
+Callable only by the owner and only after the auction end time.
+Marks the auction as ended.
+Transfers 2% commission to the owner.
+Refunds all losing bidders their bids.
 Emits the AuctionEnded event.
 
-🔁 withdrawPartialRefund()
-Allows a user to withdraw their earlier bids that are no longer valid (i.e., were overbid).
+emergencyWithdraw()
+Callable only by the owner after auction finalization.
+Allows withdrawal of any remaining ETH in the contract as emergency recovery.
 
-Can be called at any time.
-
-Reverts if there is no refundable balance.
-
-⏱️ getRemainingTime()
-Returns the remaining time in seconds until the auction ends.
-
-💰 Deposit Management
-All bids are sent as ETH and stored within the contract.
-
-Refunds are processed automatically or via withdrawPartialRefund() for overbid amounts.
+💰 Bid and Refund Management
+Bids are stored in the contract's balance.
+Refunds are processed upon auction finalization (endAuction) or through withdrawPartialRefund for earlier bids that were overbid.
 
 📌 Events
-
 event NewBid(address indexed bidder, uint amount);
 event AuctionEnded(address winner, uint amount);
+event PartialRefund(address indexed bidder, uint amount);
+
 
 🔒 Modifiers
-onlyOwner: Restricts certain functions to the contract deployer.
+onlyOwner: Restricts function access to the contract deployer (owner).
 
-auctionActive: Ensures the auction has not ended.
+🛠 Modifications & Notes
+Added onlyOwner modifier to restrict sensitive functions (endAuction, emergencyWithdraw).
 
-auctionEnded: Ensures the auction has ended.
+Implemented minimum bid increment percentage (5%).
 
-📌 Notes
-The contract is for academic purposes and does not transfer any real product.
+Auction end time extends by 10 minutes if a bid is placed near the auction close.
 
-It includes secure handling of ETH and prevents reentrancy vulnerabilities.
+Stored bid history per bidder.
 
-The refund logic ensures no ETH is locked permanently.
+Added partial refund mechanism allowing bidders to withdraw overbid amounts at any time.
+
+Commission of 2% is deducted and sent to the owner upon finalizing the auction.
+
+Included emergency withdrawal by owner for any leftover ETH after auction finalization.
+
+Added comprehensive revert error messages for clarity ("notOwner", "ended", "lowBid", "noRefund", etc.).
+
+Optimized refunds loop for all losing bidders during endAuction.
+
+Contract is designed for academic use and does not transfer physical goods.
 
 👤 Author
 Pablo Maestu
