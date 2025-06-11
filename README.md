@@ -19,9 +19,9 @@ Initializes the auction duration in minutes and sets the deployer as the owner.
 
 ```solidity
 constructor(uint _durationInMinutes)
+---
 
-
-🔥 Main Functionalities
+## 🔥 Main Functionalities
 
 placeBid()
 Allows users to place bids before the auction ends.
@@ -55,21 +55,21 @@ Emits the AuctionEnded event.
 emergencyWithdraw()
 Callable only by the owner after auction finalization.
 Allows withdrawal of any remaining ETH in the contract as emergency recovery.
-
-💰 Bid and Refund Management
+---
+## 💰 Bid and Refund Management
 Bids are stored in the contract's balance.
 Refunds are processed upon auction finalization (endAuction) or through withdrawPartialRefund for earlier bids that were overbid.
-
-📌 Events
+---
+## 📌 Events
 event NewBid(address indexed bidder, uint amount);
 event AuctionEnded(address winner, uint amount);
 event PartialRefund(address indexed bidder, uint amount);
+---
 
-
-🔒 Modifiers
+## 🔒 Modifiers
 onlyOwner: Restricts function access to the contract deployer (owner).
-
-🛠 Modifications & Notes
+---
+## 🛠 Modifications & Notes
 Added onlyOwner modifier to restrict sensitive functions (endAuction, emergencyWithdraw).
 
 Implemented minimum bid increment percentage (5%).
@@ -89,6 +89,6 @@ Added comprehensive revert error messages for clarity ("notOwner", "ended", "low
 Optimized refunds loop for all losing bidders during endAuction.
 
 Contract is designed for academic use and does not transfer physical goods.
-
+---
 👤 Author
 Pablo Maestu
