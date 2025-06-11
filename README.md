@@ -22,7 +22,7 @@ constructor(uint _durationInMinutes)
 
 ---
 
-## 🔥 Main Functionalities
+### 🔥 Main Functionalities
 
 placeBid()
 Allows users to place bids before the auction ends.
@@ -66,7 +66,7 @@ Refunds are processed upon auction finalization (endAuction) or through withdraw
 
 ---
 
-## 📌 Events
+### 📌 Events
 
 event NewBid(address indexed bidder, uint amount);
 event AuctionEnded(address winner, uint amount);
@@ -74,13 +74,13 @@ event PartialRefund(address indexed bidder, uint amount);
 
 ---
 
-## 🔒 Modifiers
+### 🔒 Modifiers
 
 onlyOwner: Restricts function access to the contract deployer (owner).
 
 ---
 
-## 🛠 Modifications & Notes
+### 🛠 Modifications & Notes
 
 Added onlyOwner modifier to restrict sensitive functions (endAuction, emergencyWithdraw).
 
