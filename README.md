@@ -22,7 +22,7 @@ constructor(uint _durationInMinutes)
 
 ---
 
-### 🔥 Main Functionalities
+## 🔥 Main Functionalities
 
 placeBid()
 Allows users to place bids before the auction ends.
