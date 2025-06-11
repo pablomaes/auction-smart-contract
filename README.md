@@ -20,7 +20,6 @@ Initializes the auction duration in minutes and sets the deployer as the owner.
 ```solidity
 constructor(uint _durationInMinutes)
 
----
 
 ## 🔥 Main Functionalities
 
